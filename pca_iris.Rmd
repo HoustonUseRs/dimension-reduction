@@ -6,6 +6,10 @@ output: html_notebook
 https://www.r-bloggers.com/computing-and-visualizing-pca-in-r/
 
 ```{r}
+library(pacman)
+p_load(caret)
+
+
 data(iris)
 head(iris, 3)
 
@@ -44,10 +48,11 @@ print(g)
 ```
 
 ```{r}
-require(caret)
 trans = preProcess(iris[,1:4], 
                    method=c("BoxCox", "center", 
                             "scale", "pca"))
 PC = predict(trans, iris[,1:4])
+
+PC
 ```
 
