@@ -1,0 +1,53 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+https://www.r-bloggers.com/computing-and-visualizing-pca-in-r/
+
+```{r}
+data(iris)
+head(iris, 3)
+
+plot(density(iris[, 1]))
+plot(density(log(iris[, 1])))
+
+# log transform
+log.ir <- log(iris[, 1:4])
+ir.species <- iris[, 5]
+ 
+# apply PCA - scale. = TRUE is highly
+# advisable, but default is FALSE.
+ir.pca <- prcomp(log.ir, center = TRUE, scale. = TRUE)
+# print method
+print(ir.pca)
+```
+
+```{r eval=FALSE}
+devtools::install_github("ggbiplot", "vqv")
+```
+
+```{r}
+plot(ir.pca, type = "l")
+summary(ir.pca)
+predict(ir.pca, 
+        newdata=tail(log.ir, 2))
+ 
+library(ggbiplot)
+g <- ggbiplot(ir.pca, obs.scale = 1, var.scale = 1, 
+              groups = ir.species, ellipse = TRUE, 
+              circle = TRUE)
+g <- g + scale_color_discrete(name = '')
+g <- g + theme(legend.direction = 'horizontal', 
+               legend.position = 'top')
+print(g)
+```
+
+```{r}
+require(caret)
+trans = preProcess(iris[,1:4], 
+                   method=c("BoxCox", "center", 
+                            "scale", "pca"))
+PC = predict(trans, iris[,1:4])
+```
+

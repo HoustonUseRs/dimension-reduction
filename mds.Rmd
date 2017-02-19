@@ -1,0 +1,51 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(pacman)
+#devtools::install_github("genomicsclass/tissuesGeneExpression")
+
+p_load(rafalib, tissuesGeneExpression)
+data(tissuesGeneExpression)
+colind <- tissue%in%c("kidney","colon","liver")
+mat <- e[,colind]
+group <- factor(tissue[colind])
+dim(mat)
+```
+
+
+```{r}
+s <- svd(mat-rowMeans(mat))
+PC1 <- s$d[1]*s$v[,1]
+PC2 <- s$d[2]*s$v[,2]
+mypar(1,1)
+plot(PC1,PC2,pch=21,bg=as.numeric(group))
+legend("bottomright",levels(group),col=seq(along=levels(group)),pch=15,cex=1.5)
+```
+
+
+```{r}
+d <- dist(t(mat))
+mds <- cmdscale(d)
+
+mypar()
+plot(mds[,1],mds[,2],bg=as.numeric(group),pch=21,
+     xlab="First dimension",ylab="Second dimension")
+legend("bottomleft",levels(group),col=seq(along=levels(group)),pch=15)
+```
+
+
+```{r}
+d <- dist(t(mat), method = "manhattan")
+mds <- cmdscale(d)
+
+mypar()
+plot(mds[,1],mds[,2],bg=as.numeric(group),pch=21,
+     xlab="First dimension",ylab="Second dimension")
+legend("bottomleft",levels(group),col=seq(along=levels(group)),pch=15)
+
+```
+
